@@ -11,9 +11,9 @@
 
 <h4>Methods and Results</h4>
 Three formulations of AutoTM were proposed:
-Static → no tensor movement: place tensors in either DRAM or PMM
-Synchronous → tensor movements, blocking kernel execution
-Asynchronous → tensor movements without blocking execution
+<b>Static</b> → no tensor movement: place tensors in either DRAM or PMM
+<b>Synchronous</b> → tensor movements, blocking kernel execution
+<b>Asynchronous</b> → tensor movements without blocking execution
 Comparisons:
 With an all-DRAM system: The results show that it is possible to lower the DRAM demand by 80% at the cost of only 20% slowdown.
 With 2LM system: For some workloads, the synchronous AutoTM is as much as 3x faster than 2LM, and the static AutoTM is 2x faster.
