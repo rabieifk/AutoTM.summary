@@ -1,1 +1,26 @@
-..
+<h1>AutoTM: Automatic Tensor Movement in Heterogeneous Memory Systems</h1>
+<h3>TL;DR</h3>
+Problem: Memory capacity being a bottleneck for training DNNs due to high DRAM costs
+Goal: To minimize the required DRAM for training of DNNs without compromising performance significantly.
+Solution: Reduce the memory cost by replacing most of DRAM capacity with PMM (cheaper technology such as Intel Optane), and optimally move live tensors between DRAM and PMM. 
+
+<h3>Explanation</h3>
+Problem: Modern DNNs have billions of parameters hence require large amounts of active memory for training. This makes memory capacity a bottleneck for training large scale neural networks. 
+Goal: A heterogeneous memory system with a mixture of expensive (DRAM) and cheap (PMM) technologies can provide a significantly higher memory capacity at the same cost compared to an all-DRAM system. The goal in such a hybrid system then becomes to minimize the training-slowdown by optimally placing and moving live tensors in DRAM(fast) and PMM(slow). This way a typical training can be performed using a much smaller DRAM at a slightly slower speed compared to an all-DRAM system. 
+Solution: AutoTM (the proposed solution) extracts, for a given DNN, an nGraph which describes the tensor flow among the DNN kernels and then uses an ILP (integer linear programming) formulation to find the optimum tensor-movement schedule that minimizes the overall DNN-training time; specifically, since the PMM has a significantly lower write speed, the optimizer seeks to place as many live tensors in the DRAM as possible to avoid the slowness of PMM. Once these tensors are settled and become read-only they are moved to PMM which is fast for read operations. Of course, depending on the size of the DRAM not all tensors can fit in the DRAM and the job of the optimizer is to select those tensors for out-of-DRAM execution that minimally lengthen the overall DNN training time. The optimizer (ILP) is also guided by kernel performance profiles which determine the expected run-time of each kernel based on its input tensors locations.
+
+<h4>Methods and Results</h4>
+Three formulations of AutoTM were proposed:
+Static → no tensor movement: place tensors in either DRAM or PMM
+Synchronous → tensor movements, blocking kernel execution
+Asynchronous → tensor movements without blocking execution
+Comparisons:
+With an all-DRAM system: The results show that it is possible to lower the DRAM demand by 80% at the cost of only 20% slowdown.
+With 2LM system: For some workloads, the synchronous AutoTM is as much as 3x faster than 2LM, and the static AutoTM is 2x faster.
+
+<h4>New problems / Next steps for the research</h4>
+1- Supported DNNs by AutoTM must have static computation graphs. For dynamic graphs the resulting schedule (ILP output) changes at runtime thereby rendering the approach impractical.
+One possible idea could be to use AutoTM for groups of kernels instead of single kernel nodes. The idea is to identify groups of kernels in the dynamic graph that can form a static overlay graph for which AutoTM can be applied, but each of its nodes is a group of kernels with dynamic computation nature. An all-DRAM approach is used for kernel groups and once their results are settled, they are moved to PMM.
+2- ILP may not be accurate: AutoTM profiles each kernel to predict its training time. This prediction may not be always 100% accurate as the actual training might be data dependent.
+Better estimation techniques can be worked on to yield more accurate results.
+	
