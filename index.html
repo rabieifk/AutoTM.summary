@@ -11,9 +11,9 @@
 
 <h4>Methods and Results</h4>
 Three formulations of AutoTM were proposed:
-<b>Static</b> → no tensor movement: place tensors in either DRAM or PMM
-<b>Synchronous</b> → tensor movements, blocking kernel execution
-<b>Asynchronous</b> → tensor movements without blocking execution
+<br><b>Static</b> → no tensor movement: place tensors in either DRAM or PMM
+<br><b>Synchronous</b> → tensor movements, blocking kernel execution
+<br><b>Asynchronous</b> → tensor movements without blocking execution
 Comparisons:
 With an all-DRAM system: The results show that it is possible to lower the DRAM demand by 80% at the cost of only 20% slowdown.
 With 2LM system: For some workloads, the synchronous AutoTM is as much as 3x faster than 2LM, and the static AutoTM is 2x faster.
@@ -23,4 +23,5 @@ With 2LM system: For some workloads, the synchronous AutoTM is as much as 3x fas
 One possible idea could be to use AutoTM for groups of kernels instead of single kernel nodes. The idea is to identify groups of kernels in the dynamic graph that can form a static overlay graph for which AutoTM can be applied, but each of its nodes is a group of kernels with dynamic computation nature. An all-DRAM approach is used for kernel groups and once their results are settled, they are moved to PMM.
 2- ILP may not be accurate: AutoTM profiles each kernel to predict its training time. This prediction may not be always 100% accurate as the actual training might be data dependent.
 Better estimation techniques can be worked on to yield more accurate results.
+	
 	
